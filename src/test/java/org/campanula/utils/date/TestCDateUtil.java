@@ -25,7 +25,7 @@ class TestCDateUtil {
 
     @Test
     void localDate2Date() {
-        Date date = CDateUtil.localDate2Date(LocalDate.now());
+        Date date = CDateUtil.localDate2DateStart(LocalDate.now());
         System.out.println(date);
     }
 }
