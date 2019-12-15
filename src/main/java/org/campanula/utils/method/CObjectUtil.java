@@ -4,29 +4,31 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.campanula.utils.exception.EmptyException;
-import org.campanula.utils.exception.EmptyRuntimeException;
+import org.campanula.utils.exception.ObjectEmptyException;
+import org.campanula.utils.exception.ObjectEmptyRuntimeException;
+import org.campanula.utils.exception.MethodNullException;
 import org.campanula.utils.function.VoidMethod;
 
 /**
  * @Author: Campanula
  * @Date 2019-12-14
+ * 如果传入的方法为null 被调用到会抛出 MethodNullException
  */
 public class CObjectUtil {
-
-  private static final String OBJECT_IS_NULL = "object is null";
 
   /**
    * 获取方法返回的对象 如果为空 则返回定义的默认值
    * @param original 返回的对象方法
    * @param nullOr 当获取对象为空时返回的默认值
    * @return 返回对象 如果获取的和默认值都为空 则会返回空
-   * @code getO(() -> selectObject(), Object::new)
+   * @code get(() -> selectObject(), Object::new)
    */
-  public static <T> T getO(Supplier<T> original, Supplier<T> nullOr) {
-    if (original == null) return assist(nullOr);
+  public static <T> T get(Supplier<T> original, Supplier<T> nullOr) {
+    if (original == null) throw new MethodNullException();
     T t = original.get();
-    if (t == null) return assist(nullOr);
+    if (t == null)
+        if (nullOr == null) throw new MethodNullException();
+        else return nullOr.get();
     return t;
   }
 
@@ -34,11 +36,11 @@ public class CObjectUtil {
    * 获取方法返回的对象 如果为空 则会抛出EmptyRuntimeException
    * @param original 返回的对象方法
    * @return 返回对象
-   * @throws EmptyRuntimeException
-   * @code oNullRuntimeThrows(() -> selectObject())
+   * @throws ObjectEmptyRuntimeException
+   * @code nullRuntimeThrows(() -> selectObject())
    */
-  public static <T> T oNullRuntimeThrows(Supplier<T> original) {
-    return oNullRuntimeThrows(original, OBJECT_IS_NULL);
+  public static <T> T nullRuntimeThrows(Supplier<T> original) {
+    return nullRuntimeThrows(original, ObjectEmptyRuntimeException::new);
   }
 
   /**
@@ -46,11 +48,11 @@ public class CObjectUtil {
    * @param original 返回的对象方法
    * @param exceptionMessage 异常的消息
    * @return 返回对象
-   * @throws EmptyRuntimeException
-   * @code oNullRuntimeThrows(() -> selectObject(), "object is null")
+   * @throws ObjectEmptyRuntimeException
+   * @code nullRuntimeThrows(() -> selectObject(), "object is null")
    */
-  public static <T> T oNullRuntimeThrows(Supplier<T> original, String exceptionMessage) {
-    return oNullRuntimeThrows(original, new EmptyRuntimeException(exceptionMessage));
+  public static <T> T nullRuntimeThrows(Supplier<T> original, final String exceptionMessage) {
+    return nullRuntimeThrows(original, () -> new ObjectEmptyRuntimeException(exceptionMessage));
   }
 
   /**
@@ -59,12 +61,12 @@ public class CObjectUtil {
    * @param e 要抛出的指定RuntimeException子类异常
    * @return 返回对象
    * @throws RuntimeException
-   * @code oNullRuntimeThrows(() -> selectObject(), RuntimeException::new)
+   * @code nullRuntimeThrows(() -> selectObject(), RuntimeException::new)
    */
-  public static <T, E extends RuntimeException> T oNullRuntimeThrows(Supplier<T> original, E e) {
-    if (original == null) throw e;
+  public static <T, EX extends RuntimeException> T nullRuntimeThrows(Supplier<T> original, Supplier<EX> e) {
+    if (original == null) throw new MethodNullException();
     T t = original.get();
-    if (t == null) throw e;
+    if (t == null) throw e.get();
     return t;
   }
 
@@ -73,10 +75,10 @@ public class CObjectUtil {
    * @param original 返回的对象方法
    * @return 返回对象
    * @throws Exception
-   * @code oNullThrows(() -> selectObject())
+   * @code nullThrows(() -> selectObject())
    */
-  public static <T> T oNullThrows(Supplier<T> original) throws EmptyException {
-    return oNullThrows(original, OBJECT_IS_NULL);
+  public static <T> T nullThrows(Supplier<T> original) throws ObjectEmptyException {
+    return nullThrows(original, ObjectEmptyException::new);
   }
 
   /**
@@ -84,11 +86,11 @@ public class CObjectUtil {
    * @param original 返回的对象方法
    * @param exceptionMessage 异常的消息
    * @return 返回对象
-   * @throws EmptyException
-   * @code oNullThrows(() -> selectObject(), "object is null")
+   * @throws ObjectEmptyException
+   * @code nullThrows(() -> selectObject(), "object is null")
    */
-  public static <T> T oNullThrows(Supplier<T> original, String exceptionMessage) throws EmptyException {
-    return oNullThrows(original, new EmptyException(exceptionMessage));
+  public static <T> T nullThrows(Supplier<T> original, final String exceptionMessage) throws ObjectEmptyException {
+    return nullThrows(original, () -> new ObjectEmptyException(exceptionMessage));
   }
 
   /**
@@ -97,12 +99,12 @@ public class CObjectUtil {
    * @param e 要抛出的指定Exception子类异常
    * @return 返回对象
    * @throws Exception
-   * @code oNullThrows(() -> selectObject(), Exception::new)
+   * @code nullThrows(() -> selectObject(), Exception::new)
    */
-  public static <T, E extends Exception> T oNullThrows(Supplier<T> original, E e) throws E {
-    if (original == null) throw e;
+  public static <T, EX extends Exception> T nullThrows(Supplier<T> original, Supplier<EX> e) throws EX {
+    if (original == null) throw e.get();
     T t = original.get();
-    if (t == null) throw e;
+    if (t == null) throw e.get();
     return t;
   }
 
@@ -114,37 +116,38 @@ public class CObjectUtil {
    * @return 返回加工后的对象 如果如果加工方法为空则返回空
    * @code oProcess(() -> selectObject(), (o) -> process(o), () -> Object::new)
    */
-  public static <T> T oProcess(Supplier<T> original, Function<T, T> oNotNull, Supplier<T> oNull) {
-    T t = getO(original, null);
+  public static <T> T process(Supplier<T> original, Function<T, T> oNotNull, Supplier<T> oNull) {
+    T t = get(original, null);
     if (t != null)
-      if (oNotNull != null) return oNotNull.apply(t);
+      if (oNotNull == null) throw new MethodNullException();
+      else return oNotNull.apply(t);
     else
-      if (oNull != null) return oNull.get();
-    return null;
+      if (oNull == null) throw new MethodNullException();
+      else return oNull.get();
   }
 
   /**
    * 加工获取的对象 对象不为空时执行不为空的方法 为空时抛出EmptyRuntimeException
    * @param original 获取对象的方法
    * @param oNotNull 对象不为空执行的方法
-   * @throws EmptyRuntimeException
+   * @throws ObjectEmptyRuntimeException
    * @return 返回加工后的对象
-   * @code @code oProcessNullRuntimeThrows(() -> selectObject(), (o) -> process(o))
+   * @code @code processNullRuntimeThrows(() -> selectObject(), (o) -> process(o))
    */
-  public static <T> T oProcessNullRuntimeThrows(Supplier<T> original, Function<T, T> oNotNull) {
-    return oProcessNullRuntimeThrows(original, oNotNull, OBJECT_IS_NULL);
+  public static <T> T processNullRuntimeThrows(Supplier<T> original, Function<T, T> oNotNull) {
+    return processNullRuntimeThrows(original, oNotNull, ObjectEmptyRuntimeException::new);
   }
 
   /**
    * 加工获取的对象 对象不为空时执行不为空的方法 为空时抛出EmptyRuntimeException
    * @param original 获取对象的方法
    * @param oNotNull 对象不为空执行的方法
-   * @throws EmptyRuntimeException
+   * @throws ObjectEmptyRuntimeException
    * @return 返回加工后的对象
-   * @code @code oProcessNullRuntimeThrows(() -> selectObject(), (o) -> process(o), "object is null")
+   * @code @code processNullRuntimeThrows(() -> selectObject(), (o) -> process(o), "object is null")
    */
-  public static <T> T oProcessNullRuntimeThrows(Supplier<T> original, Function<T, T> oNotNull, String exceptionMessage) {
-    return oProcessNullRuntimeThrows(original, oNotNull, new EmptyRuntimeException(exceptionMessage));
+  public static <T> T processNullRuntimeThrows(Supplier<T> original, Function<T, T> oNotNull, final String exceptionMessage) {
+    return processNullRuntimeThrows(original, oNotNull, () -> new ObjectEmptyRuntimeException(exceptionMessage));
   }
 
   /**
@@ -153,38 +156,38 @@ public class CObjectUtil {
    * @param oNotNull 对象不为空执行的方法
    * @param e 要抛出的指定RuntimeException子类异常
    * @throws RuntimeException
-   * @code oProcessNullRuntimeThrows(() -> selectObject(), (o) -> process(o), RuntimeException::new)
+   * @code processNullRuntimeThrows(() -> selectObject(), (o) -> process(o), RuntimeException::new)
    */
-  public static <T, E extends RuntimeException> T oProcessNullRuntimeThrows(Supplier<T> original, Function<T, T> oNotNull, E e) {
-    T t = getO(original, null);
+  public static <T, EX extends RuntimeException> T processNullRuntimeThrows(Supplier<T> original, Function<T, T> oNotNull, Supplier<EX> e) {
+    T t = get(original, null);
     if (t != null)
-      if (oNotNull != null) return oNotNull.apply(t);
-      else return t;
-    throw e;
+      if (oNotNull == null) throw new MethodNullException();
+      else return oNotNull.apply(t);
+    throw e.get();
   }
 
   /**
    * 加工获取的对象 对象不为空时执行不为空的方法 为空时抛出EmptyException
    * @param original 获取对象的方法
    * @param oNotNull 对象不为空执行的方法
-   * @throws EmptyException
+   * @throws ObjectEmptyException
    * @return 返回加工后的对象
-   * @code @code oProcessNullThrows(() -> selectObject(), process(o))
+   * @code @code processNullThrows(() -> selectObject(), process(o))
    */
-  public static <T> T oProcessNullThrows(Supplier<T> original, Function<T, T> oNotNull) throws EmptyException {
-    return oProcessNullThrows(original, oNotNull, OBJECT_IS_NULL);
+  public static <T> T processNullThrows(Supplier<T> original, Function<T, T> oNotNull) throws ObjectEmptyException {
+    return processNullThrows(original, oNotNull, ObjectEmptyException::new);
   }
 
   /**
    * 加工获取的对象 对象不为空时执行不为空的方法 为空时抛出EmptyException
    * @param original 获取对象的方法
    * @param oNotNull 对象不为空执行的方法
-   * @throws EmptyException
+   * @throws ObjectEmptyException
    * @return 返回加工后的对象
-   * @code @code oProcessNullThrows(() -> selectObject(), (o) -> process(o), "object is null")
+   * @code @code processNullThrows(() -> selectObject(), (o) -> process(o), "object is null")
    */
-  public static <T> T oProcessNullThrows(Supplier<T> original, Function<T, T> oNotNull, String exceptionMessage) throws EmptyException {
-    return oProcessNullThrows(original, oNotNull, new EmptyException(exceptionMessage));
+  public static <T> T processNullThrows(Supplier<T> original, Function<T, T> oNotNull, final String exceptionMessage) throws ObjectEmptyException {
+    return processNullThrows(original, oNotNull, () -> new ObjectEmptyException(exceptionMessage));
   }
 
   /**
@@ -193,14 +196,14 @@ public class CObjectUtil {
    * @param oNotNull 对象不为空执行的方法
    * @param e 要抛出的指定Exception子类异常
    * @throws Exception
-   * @code oProcessNullThrows(() -> selectObject(), (o) -> process(o), RuntimeException::new)
+   * @code processNullThrows(() -> selectObject(), (o) -> process(o), RuntimeException::new)
    */
-  public static <T, E extends Exception> T oProcessNullThrows(Supplier<T> original, Function<T, T> oNotNull, E e) throws E {
-    T t = getO(original, null);
+  public static <T, EX extends Exception> T processNullThrows(Supplier<T> original, Function<T, T> oNotNull, Supplier<EX> e) throws EX {
+    T t = get(original, null);
     if (t != null)
-      if (oNotNull != null) return oNotNull.apply(t);
-      else return t;
-    else throw e;
+      if (oNotNull == null) throw new MethodNullException();
+      else return oNotNull.apply(t);
+    else throw e.get();
   }
 
   /**
@@ -210,25 +213,25 @@ public class CObjectUtil {
    * @param oNull 对象为空执行的方法
    * @code oConsume(() -> selectObject(), (o) -> update(o), () -> System.out.println("object is null"))
    */
-  public static <T> void oConsume(Supplier<T> original, Consumer<T> oNotNull, VoidMethod oNull) {
-    T t = getO(original, null);
+  public static <T> void consume(Supplier<T> original, Consumer<T> oNotNull, VoidMethod oNull) {
+    T t = get(original, null);
     if (t != null)
-      if (oNotNull != null)
-        oNotNull.accept(t);
-      else
-      if (oNull != null)
-        oNull.method();
+        if (oNotNull == null) throw new MethodNullException();
+        else oNotNull.accept(t);
+     else
+        if (oNull == null) throw new MethodNullException();
+        else oNull.method();
   }
 
   /**
    * 获取对象 对象不为空时执行不为空的方法 为空时抛出EmptyRuntimeException
    * @param original 获取对象的方法
    * @param oNotNull 对象不为空执行的方法
-   * @throws EmptyRuntimeException
-   * @code oConsumeNullRuntimeThrows(() -> selectObject(), (o) -> update(o))
+   * @throws ObjectEmptyRuntimeException
+   * @code consumeNullRuntimeThrows(() -> selectObject(), (o) -> update(o))
    */
-  public static <T> void oConsumeNullRuntimeThrows(Supplier<T> original, Consumer<T> oNotNull) {
-    oConsumeNullRuntimeThrows(original, oNotNull, OBJECT_IS_NULL);
+  public static <T> void consumeNullRuntimeThrows(Supplier<T> original, Consumer<T> oNotNull) {
+    consumeNullRuntimeThrows(original, oNotNull, ObjectEmptyRuntimeException::new);
   }
 
   /**
@@ -236,11 +239,11 @@ public class CObjectUtil {
    * @param original 获取对象的方法
    * @param oNotNull 对象不为空执行的方法
    * @param exceptionMessage 异常的消息
-   * @throws EmptyRuntimeException
-   * @code oConsumeNullRuntimeThrows(() -> selectObject(), (o) -> update(o), "object is null")
+   * @throws ObjectEmptyRuntimeException
+   * @code consumeNullRuntimeThrows(() -> selectObject(), (o) -> update(o), "object is null")
    */
-  public static <T> void oConsumeNullRuntimeThrows(Supplier<T> original, Consumer<T> oNotNull, String exceptionMessage) {
-    oConsumeNullRuntimeThrows(original, oNotNull, new EmptyRuntimeException(exceptionMessage));
+  public static <T> void consumeNullRuntimeThrows(Supplier<T> original, Consumer<T> oNotNull, final String exceptionMessage) {
+    consumeNullRuntimeThrows(original, oNotNull, () -> new ObjectEmptyRuntimeException(exceptionMessage));
   }
 
   /**
@@ -249,24 +252,25 @@ public class CObjectUtil {
    * @param oNotNull 对象不为空执行的方法
    * @param e 要抛出的指定RuntimeException子类异常
    * @throws RuntimeException
-   * @code oConsumeNullRuntimeThrows(() -> selectObject(), (o) -> update(o), RuntimeException::new)
+   * @code consumeNullRuntimeThrows(() -> selectObject(), (o) -> update(o), RuntimeException::new)
    */
-  public static <T, E extends RuntimeException> void oConsumeNullRuntimeThrows(Supplier<T> original, Consumer<T> oNotNull, E e) {
-    T t = getO(original, null);
+  public static <T, EX extends RuntimeException> void consumeNullRuntimeThrows(Supplier<T> original, Consumer<T> oNotNull, Supplier<EX> e) {
+    T t = get(original, null);
     if (t != null)
-      if (oNotNull != null) oNotNull.accept(t);
-    throw e;
+      if (oNotNull == null) throw new MethodNullException();
+      else oNotNull.accept(t);
+    else throw e.get();
   }
 
   /**
    * 获取对象 对象不为空时执行不为空的方法 为空时抛出EmptyException
    * @param original 获取对象的方法
    * @param oNotNull 对象不为空执行的方法
-   * @throws EmptyException
-   * @code oConsumeNullThrows(() -> selectObject(), (o) -> update(o))
+   * @throws ObjectEmptyException
+   * @code consumeNullThrows(() -> selectObject(), (o) -> update(o))
    */
-  public static <T> void oConsumeNullThrows(Supplier<T> original, Consumer<T> oNotNull) throws EmptyException {
-    oConsumeNullThrows(original, oNotNull, OBJECT_IS_NULL);
+  public static <T> void consumeNullThrows(Supplier<T> original, Consumer<T> oNotNull) throws ObjectEmptyException {
+    consumeNullThrows(original, oNotNull, ObjectEmptyException::new);
   }
 
   /**
@@ -274,11 +278,11 @@ public class CObjectUtil {
    * @param original 获取对象的方法
    * @param oNotNull 对象不为空执行的方法
    * @param exceptionMessage 异常的消息
-   * @throws EmptyException
-   * @code oConsumeNullThrows(() -> selectObject(), (o) -> update(o), "object is null")
+   * @throws ObjectEmptyException
+   * @code consumeNullThrows(() -> selectObject(), (o) -> update(o), "object is null")
    */
-  public static <T> void oConsumeNullThrows(Supplier<T> original, Consumer<T> oNotNull, String exceptionMessage) throws EmptyException {
-    oConsumeNullThrows(original, oNotNull, new EmptyException(exceptionMessage));
+  public static <T> void consumeNullThrows(Supplier<T> original, Consumer<T> oNotNull, final String exceptionMessage) throws ObjectEmptyException {
+    consumeNullThrows(original, oNotNull, () -> new ObjectEmptyException(exceptionMessage));
   }
 
   /**
@@ -287,52 +291,57 @@ public class CObjectUtil {
    * @param oNotNull 对象不为空执行的方法
    * @param e 要抛出的指定Exception子类异常
    * @throws Exception
-   * @code oConsumeNullRuntimeThrows(() -> selectObject(), (o) -> update(o), RuntimeException::new)
+   * @code consumeNullRuntimeThrows(() -> selectObject(), (o) -> update(o), RuntimeException::new)
    */
-  public static <T, E extends Exception> void oConsumeNullThrows(Supplier<T> original, Consumer<T> oNotNull, E e) throws E {
-    T t = getO(original, null);
+  public static <T, EX extends Exception> void consumeNullThrows(Supplier<T> original, Consumer<T> oNotNull, Supplier<EX> e) throws EX {
+    T t = get(original, null);
     if (t != null)
-      if (oNotNull != null)
-        oNotNull.accept(t);
-      else throw e;
+      if (oNotNull == null) throw new MethodNullException();
+      else oNotNull.accept(t);
+    else throw e.get();
   }
 
   /**
-   * 获取对象并转换 对象不为空时执行不为空的方法 为空时执行为空的方法
+   * 获取对象并转换 对象不为空时执行不为空的方法 为空时执行为空的方法 如果执行方法为空 则会抛出 MethodNullException
    * @param original 获取对象的方法
    * @param oNotNull 对象不为空执行的方法
    * @param oNull 对象为空执行的方法
    * @return 返回转换后的对象
+   * @exception MethodNullException
    * @code oConvert(() -> selectObject(), (a) -> a2b(a), () -> B::new)
    */
-  public static <T, R> R oConvert(Supplier<T> original, Function<T, R> oNotNull, Supplier<R> oNull) {
-    T t = getO(original, null);
-    if (t != null) return oNotNull.apply(t);
-    return oNull.get();
+  public static <T, R> R convert(Supplier<T> original, Function<T, R> oNotNull, Supplier<R> oNull) {
+    T t = get(original, null);
+    if (t != null)
+        if (oNotNull != null) return oNotNull.apply(t);
+        else throw new MethodNullException();
+    else
+        if (oNull != null) return oNull.get();
+        else throw new MethodNullException();
   }
 
   /**
    * 获取对象并转换 对象不为空时执行不为空的方法 为空时抛出EmptyRuntimeException
    * @param original 获取对象的方法
    * @param oNotNull 对象不为空执行的方法
-   * @throws EmptyRuntimeException
+   * @throws ObjectEmptyRuntimeException
    * @return 返回转换后的对象
-   * @code @code oConvertNullRuntimeThrows(() -> selectObject(), (a) -> a2b(a))
+   * @code @code convertNullRuntimeThrows(() -> selectObject(), (a) -> a2b(a))
    */
-  public static <T, R> R oConvertNullRuntimeThrows(Supplier<T> original, Function<T, R> oNotNull) {
-    return oConvertNullRuntimeThrows(original, oNotNull, OBJECT_IS_NULL);
+  public static <T, R> R convertNullRuntimeThrows(Supplier<T> original, Function<T, R> oNotNull) {
+    return convertNullRuntimeThrows(original, oNotNull, ObjectEmptyRuntimeException::new);
   }
 
   /**
    * 获取对象并转换 对象不为空时执行不为空的方法 为空时抛出EmptyRuntimeException
    * @param original 获取对象的方法
    * @param oNotNull 对象不为空执行的方法
-   * @throws EmptyRuntimeException
+   * @throws ObjectEmptyRuntimeException
    * @return 返回转换后的对象
-   * @code @code oConvertNullRuntimeThrows(() -> selectObject(), (a) -> a2b(a), "object is null")
+   * @code @code convertNullRuntimeThrows(() -> selectObject(), (a) -> a2b(a), "object is null")
    */
-  public static <T, R> R oConvertNullRuntimeThrows(Supplier<T> original, Function<T, R> oNotNull, String exceptionMessage) {
-    return oConvertNullRuntimeThrows(original, oNotNull, new EmptyRuntimeException(exceptionMessage));
+  public static <T, R> R convertNullRuntimeThrows(Supplier<T> original, Function<T, R> oNotNull, final String exceptionMessage) {
+    return convertNullRuntimeThrows(original, oNotNull, () -> new ObjectEmptyRuntimeException(exceptionMessage));
   }
 
   /**
@@ -342,36 +351,38 @@ public class CObjectUtil {
    * @param e 要抛出的指定RuntimeException子类异常
    * @throws RuntimeException
    * @return 返回转换后的对象
-   * @code oConvertNullRuntimeThrows(() -> selectObject(), (a) -> a2b(a), RuntimeException::new)
+   * @code convertNullRuntimeThrows(() -> selectObject(), (a) -> a2b(a), RuntimeException::new)
    */
-  public static <T, R, E extends RuntimeException> R oConvertNullRuntimeThrows(Supplier<T> original, Function<T, R> oNotNull, E e) {
-    T t = getO(original, null);
-    if (t != null) return oNotNull.apply(t);
-    throw e;
+  public static <T, R, EX extends RuntimeException> R convertNullRuntimeThrows(Supplier<T> original, Function<T, R> oNotNull, Supplier<EX> e) {
+    T t = get(original, null);
+    if (t != null) 
+        if (oNotNull != null) return oNotNull.apply(t);
+        else throw new MethodNullException();
+    throw e.get();
   }
 
   /**
    * 获取对象并转换 对象不为空时执行不为空的方法 为空时抛出EmptyException
    * @param original 获取对象的方法
    * @param oNotNull 对象不为空执行的方法
-   * @throws EmptyException
+   * @throws ObjectEmptyException
    * @return 返回转换后的对象
-   * @code @code oProcessNullThrows(() -> selectObject(), (a) -> a2b(a))
+   * @code @code processNullThrows(() -> selectObject(), (a) -> a2b(a))
    */
-  public static <T, R> R oConvertNullThrows(Supplier<T> original, Function<T, R> oNotNull) throws EmptyException {
-    return oConvertNullThrows(original, oNotNull, OBJECT_IS_NULL);
+  public static <T, R> R convertNullThrows(Supplier<T> original, Function<T, R> oNotNull) throws ObjectEmptyException {
+    return convertNullThrows(original, oNotNull, ObjectEmptyException::new);
   }
 
   /**
    * 获取对象并转换 对象不为空时执行不为空的方法 为空时抛出EmptyException
    * @param original 获取对象的方法
    * @param oNotNull 对象不为空执行的方法
-   * @throws EmptyException
+   * @throws ObjectEmptyException
    * @return 返回转换后的对象
-   * @code @code oConvertNullThrows(() -> selectObject(), (a) -> a2b(a), "object is null")
+   * @code @code convertNullThrows(() -> selectObject(), (a) -> a2b(a), "object is null")
    */
-  public static <T, R> R oConvertNullThrows(Supplier<T> original, Function<T, R> oNotNull, String exceptionMessage) throws EmptyException {
-    return oConvertNullThrows(original, oNotNull, new EmptyException(exceptionMessage));
+  public static <T, R> R convertNullThrows(Supplier<T> original, Function<T, R> oNotNull, final String exceptionMessage) throws ObjectEmptyException {
+    return convertNullThrows(original, oNotNull, () -> new ObjectEmptyException(exceptionMessage));
   }
 
   /**
@@ -381,16 +392,14 @@ public class CObjectUtil {
    * @param e 要抛出的指定Exception子类异常
    * @return 返回转换后的对象
    * @throws Exception
-   * @code oConvertNullThrows(() -> selectObject(), (a) -> a2b(a), Exception::new)
+   * @code convertNullThrows(() -> selectObject(), (a) -> a2b(a), Exception::new)
    */
-  public static <T, R, E extends Exception> R oConvertNullThrows(Supplier<T> original, Function<T, R> oNotNull, E e) throws E {
-    T t = getO(original, null);
-    if (t != null) return oNotNull.apply(t);
-    throw e;
+  public static <T, R, EX extends Exception> R convertNullThrows(Supplier<T> original, Function<T, R> oNotNull, Supplier<EX> e) throws EX {
+    T t = get(original, null);
+    if (t != null)
+        if (oNotNull == null) throw new MethodNullException();
+        else return oNotNull.apply(t);
+    throw e.get();
   }
 
-  private static <T> T assist(Supplier<T> or) {
-    if (or == null) return null;
-    else return or.get();
-  }
 }
