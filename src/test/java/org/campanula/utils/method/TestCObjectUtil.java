@@ -26,10 +26,10 @@ public class TestCObjectUtil {
 
     @Test
     public void testNullRuntimeThrows() {
-        String s = CObjectUtil.nullRuntimeThrows(() -> "1", RuntimeException::new);
+        String s = CObjectUtil.getThrows(() -> "1", RuntimeException::new);
         Assert.assertEquals(s, "1");
         thrown.expect(RuntimeException.class);
-        CObjectUtil.nullRuntimeThrows(() -> null, RuntimeException::new);
+        CObjectUtil.getThrows(() -> null, RuntimeException::new);
     }
 
     @Test
@@ -42,10 +42,10 @@ public class TestCObjectUtil {
 
     @Test
     public void testProcessNullRuntimeThrows() {
-        String process = CObjectUtil.processNullRuntimeThrows(() -> "1", (s) -> "2", RuntimeException::new);
+        String process = CObjectUtil.processThrows(() -> "1", (s) -> "2", RuntimeException::new);
         Assert.assertEquals(process, "2");
         thrown.expect(RuntimeException.class);
-        process = CObjectUtil.processNullRuntimeThrows(() -> null, (s) -> "2", RuntimeException::new);
+        process = CObjectUtil.processThrows(() -> null, (s) -> "2", RuntimeException::new);
     }
 
     @Test
@@ -56,9 +56,9 @@ public class TestCObjectUtil {
 
     @Test
     public void  testConsumeNullRuntimeThrows() {
-        CObjectUtil.consumeNullRuntimeThrows(() -> "1", System.out::println, RuntimeException::new);
+        CObjectUtil.consumeThrows(() -> "1", System.out::println, RuntimeException::new);
         thrown.expect(RuntimeException.class);
-        CObjectUtil.consumeNullRuntimeThrows(() -> null, System.out::println, RuntimeException::new);
+        CObjectUtil.consumeThrows(() -> null, System.out::println, RuntimeException::new);
     }
 
     @Test
@@ -71,10 +71,10 @@ public class TestCObjectUtil {
 
     @Test
     public void  testConvertNullRuntimeThrows() {
-        Integer integer = CObjectUtil.convertNullRuntimeThrows(() -> "1", (s) -> Integer.valueOf(2), RuntimeException::new);
+        Integer integer = CObjectUtil.convertThrows(() -> "1", (s) -> Integer.valueOf(2), RuntimeException::new);
         Assert.assertEquals(integer, Integer.valueOf(2));
         thrown.expect(RuntimeException.class);
-        CObjectUtil.convertNullRuntimeThrows(() -> null, (s) -> Integer.valueOf(2), RuntimeException::new);
+        CObjectUtil.convertThrows(() -> null, (s) -> Integer.valueOf(2), RuntimeException::new);
     }
 
 }
