@@ -1,3 +1,4 @@
+
 package org.campanula.utils.method;
 
 import org.campanula.utils.exception.MethodNullException;
