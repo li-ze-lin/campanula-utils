@@ -8,6 +8,23 @@
     <artifactId>utils</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>2.2.2.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.1-jre</version>
+        </dependency>
+
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
