@@ -125,7 +125,7 @@ public class CListUtil {
      */
     public static <T> void consume(Supplier<List<T>> original, Consumer<List<T>> oNotNull, VoidMethod oNull) {
         List<T> t = original.get();
-        if (t == null || t.isEmpty()  ) oNull.method();
+        if (t == null || t.isEmpty()) oNull.method();
         else oNotNull.accept(t);
     }
 
