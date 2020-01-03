@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 /**
  * 用于异常处理
  * 可以处理有返回值和无返回的
- * 如果 最终的异常是没有被指定的类型 会抛出传入的异常
+ * 如果 最终的异常是没有被指定的类型 会抛出传入的异常(将被RuntimeException包裹一层)
  */
 public final class CExceptionHandle<EX extends Exception, EF> {
 
@@ -95,13 +95,13 @@ public final class CExceptionHandle<EX extends Exception, EF> {
     public final static class Result<EX extends Exception, EF> {
 
         private CExceptionHandle handle;
-        private Class<Exception> clzz;
+        private Class<Exception> clazz;
 
         private Result() {
             this.handle = new CExceptionHandle();
             this.handle.suppliers = new LinkedList<>();
             this.handle.flagEnum = FlagEnum.RESULT;
-            this.clzz = Exception.class;
+            this.clazz = Exception.class;
         }
 
         public static Result aResult() {
@@ -115,7 +115,7 @@ public final class CExceptionHandle<EX extends Exception, EF> {
          * @return 拼装类本身
          */
         public Result add(Class<EX> eClass, Supplier<EF> supplier) {
-            if (this.clzz.equals(eClass)) {
+            if (this.clazz.equals(eClass)) {
                 this.handle.exceptionSupplier = supplier;
                 return this;
             }
@@ -135,13 +135,13 @@ public final class CExceptionHandle<EX extends Exception, EF> {
     public final static class Blank<EX extends Exception> {
 
         private CExceptionHandle handle;
-        private Class<Exception> clzz;
+        private Class<Exception> clazz;
 
         private Blank() {
             this.handle = new CExceptionHandle();
             this.handle.voidMethods = new LinkedList<>();
             this.handle.flagEnum = FlagEnum.BLANK;
-            this.clzz = Exception.class;
+            this.clazz = Exception.class;
         }
 
         public static Blank aBlank() {
@@ -155,7 +155,7 @@ public final class CExceptionHandle<EX extends Exception, EF> {
          * @return 拼装类本身
          */
         public Blank add(Class<EX> eClass, VoidMethod voidMethod) {
-            if (this.clzz.equals(eClass)) {
+            if (this.clazz.equals(eClass)) {
                 this.handle.exceptionVoidMethods = voidMethod;
                 return this;
             }
