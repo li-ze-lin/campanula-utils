@@ -88,7 +88,7 @@ public class CWhereUtil {
      * @param where 条件
      * @return 返回操作的返回值
      */
-    public static <T, EX extends RuntimeException> T thenThrow(Supplier<T> success, Supplier<Boolean> ...where) {
+    public static <T> T thenThrow(Supplier<T> success, Supplier<Boolean> ...where) {
         return thenThrow(success, WhereNotPassRuntimeException::new, where);
     }
 
@@ -99,7 +99,7 @@ public class CWhereUtil {
      * @param where 条件
      * @return 返回操作的返回值
      */
-    public static <T, EX extends RuntimeException> T thenThrow(Supplier<T> success, String failMessage, Supplier<Boolean> ...where) {
+    public static <T> T thenThrow(Supplier<T> success, String failMessage, Supplier<Boolean> ...where) {
         return thenThrow(success, () -> new WhereNotPassRuntimeException(failMessage), where);
     }
 
