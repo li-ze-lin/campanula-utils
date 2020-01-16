@@ -75,8 +75,7 @@ public class TestCTryUtil {
 
     @Test
     public void handle10() {
-        thrown.expect(RuntimeException.class);
-        String s = CTryUtil.handle(() -> { int i = 1/0; return "try";}, CExceptionHandle.Result.aResult().add(NullPointerException.class, () -> "ArithmeticException").getHandle(), () -> System.out.println("finally"));
+        Assert.assertThrows(RuntimeException.class, () -> CTryUtil.handle(() -> { int i = 1/0; return "try";}, CExceptionHandle.Result.aResult().add(NullPointerException.class, () -> "ArithmeticException").getHandle(), () -> System.out.println("finally")));
     }
 
 }

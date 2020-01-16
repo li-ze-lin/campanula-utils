@@ -3,6 +3,7 @@ package org.campanula.utils.method;
 import org.campanula.utils.exception.WhereNotPassRuntimeException;
 import org.campanula.utils.function.VoidMethod;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class CWhereUtil {
@@ -13,11 +14,11 @@ public class CWhereUtil {
      * @param fail 失败的操作
      * @param where 条件
      */
-    public static void then(VoidMethod success, VoidMethod fail, Supplier<Boolean> ...where) {
+    public static void then(VoidMethod success, VoidMethod fail, BooleanSupplier ...where) {
         int length = where.length;
 
         for (int i = 0; i < length; i++) {
-            if (!where[i].get()) {
+            if (!where[i].getAsBoolean()) {
                 fail.method();
                 return;
             }
@@ -33,11 +34,11 @@ public class CWhereUtil {
      * @param where 条件
      * @return 返回操作的返回值
      */
-    public static <T> T then(Supplier<T> success, Supplier<T> fail, Supplier<Boolean> ...where) {
+    public static <T> T then(Supplier<T> success, Supplier<T> fail, BooleanSupplier ...where) {
         int length = where.length;
 
         for (int i = 0; i < length; i++) {
-            if (!where[i].get()) {
+            if (!where[i].getAsBoolean()) {
                 return fail.get();
             }
         }
@@ -50,8 +51,8 @@ public class CWhereUtil {
      * @param success 成功的操作
      * @param where 条件
      */
-    public static void thenThrow(VoidMethod success, Supplier<Boolean> ...where) {
-        thenThrow(success, WhereNotPassRuntimeException::new, where);
+    public static void thenThrow(VoidMethod success, BooleanSupplier ...where) {
+        thenThrow(success, new WhereNotPassRuntimeException(), where);
     }
 
     /**
@@ -60,8 +61,8 @@ public class CWhereUtil {
      * @param failMessage 异常信息
      * @param where 条件
      */
-    public static void thenThrow(VoidMethod success, String failMessage, Supplier<Boolean> ...where) {
-        thenThrow(success, () -> new WhereNotPassRuntimeException(failMessage), where);
+    public static void thenThrow(VoidMethod success, String failMessage, BooleanSupplier...where) {
+        thenThrow(success, new WhereNotPassRuntimeException(failMessage), where);
     }
 
     /**
@@ -70,12 +71,12 @@ public class CWhereUtil {
      * @param ex 指定的异常
      * @param where 条件
      */
-    public static <EX extends RuntimeException> void thenThrow(VoidMethod success, Supplier<EX> ex, Supplier<Boolean> ...where) {
+    public static <EX extends RuntimeException> void thenThrow(VoidMethod success, EX ex, BooleanSupplier ...where) {
         int length = where.length;
 
         for (int i = 0; i < length; i++) {
-            if (!where[i].get()) {
-                throw ex.get();
+            if (!where[i].getAsBoolean()) {
+                throw ex;
             }
         }
 
@@ -88,8 +89,8 @@ public class CWhereUtil {
      * @param where 条件
      * @return 返回操作的返回值
      */
-    public static <T> T thenThrow(Supplier<T> success, Supplier<Boolean> ...where) {
-        return thenThrow(success, WhereNotPassRuntimeException::new, where);
+    public static <T> T thenThrow(Supplier<T> success, BooleanSupplier ...where) {
+        return thenThrow(success, new WhereNotPassRuntimeException(), where);
     }
 
     /**
@@ -99,8 +100,8 @@ public class CWhereUtil {
      * @param where 条件
      * @return 返回操作的返回值
      */
-    public static <T> T thenThrow(Supplier<T> success, String failMessage, Supplier<Boolean> ...where) {
-        return thenThrow(success, () -> new WhereNotPassRuntimeException(failMessage), where);
+    public static <T> T thenThrow(Supplier<T> success, String failMessage, BooleanSupplier ...where) {
+        return thenThrow(success, new WhereNotPassRuntimeException(failMessage), where);
     }
 
     /**
@@ -110,12 +111,12 @@ public class CWhereUtil {
      * @param where 条件
      * @return 返回操作的返回值
      */
-    public static <T, EX extends RuntimeException> T thenThrow(Supplier<T> success, Supplier<EX> ex, Supplier<Boolean> ...where) {
+    public static <T, EX extends RuntimeException> T thenThrow(Supplier<T> success, EX ex, BooleanSupplier ...where) {
         int length = where.length;
 
         for (int i = 0; i < length; i++) {
-            if (!where[i].get()) {
-                throw ex.get();
+            if (!where[i].getAsBoolean()) {
+                throw ex;
             }
         }
 
