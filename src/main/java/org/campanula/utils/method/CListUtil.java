@@ -12,7 +12,7 @@ import java.util.function.Supplier;
  * @Author: Campanula
  * @Date 2019-12-14
  */
-public class CListUtil {
+public final class CListUtil {
 
     /**
      * 获取方法返回的对象 如果为空 则返回定义的默认值

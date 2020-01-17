@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 /**
  * 用于封装try-catch
  */
-public class CTryUtil {
+public final class CTryUtil {
 
     /**
      * @param tryMethod 要执行的正常方法

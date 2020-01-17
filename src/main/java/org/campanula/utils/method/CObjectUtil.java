@@ -11,7 +11,7 @@ import org.campanula.utils.function.VoidMethod;
  * @Author: Campanula
  * @Date 2019-12-14
  */
-public class CObjectUtil {
+public final class CObjectUtil {
 
     /**
      * 获取方法返回的对象 如果为空 则返回定义的默认值

@@ -7,7 +7,7 @@ import java.util.Date;
  * @Author: Campanula
  * @Date 2019-12-14
  */
-public class CDateUtil {
+public final class CDateUtil {
 
     /**
      * Instant to Date
