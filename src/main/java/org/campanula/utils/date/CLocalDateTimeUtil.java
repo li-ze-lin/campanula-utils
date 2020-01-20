@@ -3,6 +3,8 @@ package org.campanula.utils.date;
 import java.time.*;
 import java.util.Date;
 
+import static java.time.format.DateTimeFormatter.ofPattern;
+
 public final class CLocalDateTimeUtil {
 
     /**
@@ -70,6 +72,40 @@ public final class CLocalDateTimeUtil {
      */
     public static LocalDateTime dayEnd() {
         return LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+    }
+
+    /**
+     * 获取当前时间 格式为 yyyyMMddHHmmss 的字符串
+     * @return 格式化后的日期字符串
+     */
+    public static String yyyyMMddHHmmss() {
+        return LocalDateTime.now().format(ofPattern("yyyyMMddHHmmss"));
+    }
+
+    /**
+     * 获取当指定时间 格式为 yyyyMMddHHmmss 的字符串
+     * @param date 指定的时间
+     * @return 格式化后的日期字符串
+     */
+    public static String yyyyMMddHHmmss(LocalDateTime date) {
+        return date.format(ofPattern("yyyyMMddHHmmss"));
+    }
+
+    /**
+     * 获取当前时间 格式为 yyyy-MM-dd HH:mm:ss 的字符串
+     * @return 格式化后的日期字符串
+     */
+    public static String yyyy_MM_ddHH_mm_ss() {
+        return LocalDateTime.now().format(ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    /**
+     * 获取当指定时间 格式为 yyyy-MM-dd HH:mm:ss 的字符串
+     * @param date 指定的时间
+     * @return 格式化后的日期字符串
+     */
+    public static String yyyy_MM_ddHH_mm_ss(LocalDateTime date) {
+        return date.format(ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     private static ZoneId getZoneId() {
