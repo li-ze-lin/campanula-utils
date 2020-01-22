@@ -6,7 +6,7 @@
 
     <groupId>io.github.campanula-medium</groupId>
     <artifactId>utils</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-TEST-SNAPSHOOT</version>
 
     <dependencies>
 

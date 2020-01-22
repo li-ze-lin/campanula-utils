@@ -1,5 +1,5 @@
 
-package org.campanula.utils.method;
+package io.github.campanula.utils.method;
 
 import com.google.common.collect.Lists;
 import org.junit.Assert;

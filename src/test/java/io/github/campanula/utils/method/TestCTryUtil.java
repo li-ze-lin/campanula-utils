@@ -1,6 +1,6 @@
-package org.campanula.utils.method;
+package io.github.campanula.utils.method;
 
-import org.campanula.utils.param.CExceptionHandle;
+import io.github.campanula.utils.param.CExceptionHandle;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;

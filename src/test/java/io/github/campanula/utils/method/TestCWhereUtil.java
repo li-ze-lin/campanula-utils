@@ -1,4 +1,4 @@
-package org.campanula.utils.method;
+package io.github.campanula.utils.method;
 
 import org.junit.Test;
 
