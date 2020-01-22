@@ -1,6 +1,7 @@
-package org.campanula.utils.param;
+package io.github.campanula.utils.param;
 
-import org.campanula.utils.function.VoidMethod;
+import io.github.campanula.utils.function.VoidMethod;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;

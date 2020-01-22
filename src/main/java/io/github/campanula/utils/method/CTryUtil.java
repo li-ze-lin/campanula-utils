@@ -1,14 +1,14 @@
-package org.campanula.utils.method;
+package io.github.campanula.utils.method;
 
-import org.campanula.utils.function.VoidMethod;
-import org.campanula.utils.param.CExceptionHandle;
+import io.github.campanula.utils.function.VoidMethod;
+import io.github.campanula.utils.param.CExceptionHandle;
 
 import java.util.function.Supplier;
 
 /**
  * 用于封装try-catch
  */
-public class CTryUtil {
+public final class CTryUtil {
 
     /**
      * @param tryMethod 要执行的正常方法

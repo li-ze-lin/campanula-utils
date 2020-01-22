@@ -1,4 +1,4 @@
-package org.campanula.utils.date;
+package io.github.campanula.utils.date;
 
 import java.time.*;
 import java.util.Date;
@@ -7,7 +7,7 @@ import java.util.Date;
  * @Author: Campanula
  * @Date 2019-12-14
  */
-public class CDateUtil {
+public final class CDateUtil {
 
     /**
      * Instant to Date

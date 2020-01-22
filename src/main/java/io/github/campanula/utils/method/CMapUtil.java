@@ -1,17 +1,18 @@
-package org.campanula.utils.method;
+package io.github.campanula.utils.method;
 
+import io.github.campanula.utils.exception.ObjectEmptyRuntimeException;
+import io.github.campanula.utils.function.VoidMethod;
+
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import org.campanula.utils.exception.ObjectEmptyRuntimeException;
-import org.campanula.utils.function.VoidMethod;
 
 /**
  * @Author: Campanula
  * @Date 2019-12-14
  */
-public class CObjectUtil {
+public final class CMapUtil {
 
     /**
      * 获取方法返回的对象 如果为空 则返回定义的默认值
@@ -20,9 +21,9 @@ public class CObjectUtil {
      * @return 返回对象 如果获取的和默认值都为空 则会返回空
      * @code get(() -> selectObject(), Object::new)
      */
-    public static <T> T get(Supplier<T> original, Supplier<T> nullOr) {
-        T t = original.get();
-        if (t == null) return nullOr.get();
+    public static <K, V> Map<K, V> get(Supplier<Map<K, V>> original, Supplier<Map<K, V>> nullOr) {
+        Map<K, V> t = original.get();
+        if (t == null || t.isEmpty()) return nullOr.get();
         return t;
     }
 
@@ -33,7 +34,7 @@ public class CObjectUtil {
      * @throws ObjectEmptyRuntimeException
      * @code getThrows(() -> selectObject())
      */
-    public static <T> T getThrows(Supplier<T> original) {
+    public static <K, V> Map<K, V> getThrows(Supplier<Map<K, V>> original) {
         return getThrows(original, ObjectEmptyRuntimeException::new);
     }
 
@@ -45,7 +46,7 @@ public class CObjectUtil {
      * @throws ObjectEmptyRuntimeException
      * @code getThrows(() -> selectObject(), "object is null")
      */
-    public static <T> T getThrows(Supplier<T> original, final String exceptionMessage) {
+    public static <K, V> Map<K, V> getThrows(Supplier<Map<K, V>> original, final String exceptionMessage) {
         return getThrows(original, () -> new ObjectEmptyRuntimeException(exceptionMessage));
     }
 
@@ -57,9 +58,9 @@ public class CObjectUtil {
      * @throws RuntimeException
      * @code getThrows(() -> selectObject(), RuntimeException::new)
      */
-    public static <T, EX extends RuntimeException> T getThrows(Supplier<T> original, Supplier<EX> e) {
-        T t = original.get();
-        if (t == null) throw e.get();
+    public static <K, V, EX extends RuntimeException> Map<K, V> getThrows(Supplier<Map<K, V>> original, Supplier<EX> e) {
+        Map<K, V> t = original.get();
+        if (t == null || t.isEmpty()) throw e.get();
         return t;
     }
 
@@ -71,10 +72,10 @@ public class CObjectUtil {
      * @return 返回加工后的对象 如果如果加工方法为空则返回空
      * @code process(() -> selectObject(), (o) -> process(o), () -> Object::new)
      */
-    public static <T> T process(Supplier<T> original, Function<T, T> oNotNull, Supplier<T> oNull) {
-        T t = original.get();
-        if (t != null) return oNotNull.apply(t);
-        return oNull.get();
+    public static <K, V> Map<K, V> process(Supplier<Map<K, V>> original, Function<Map<K, V>, Map<K, V>> oNotNull, Supplier<Map<K, V>> oNull) {
+        Map<K, V> t = original.get();
+        if (t == null || t.isEmpty()) return oNull.get();
+        return oNotNull.apply(t);
     }
 
     /**
@@ -85,7 +86,7 @@ public class CObjectUtil {
      * @throws ObjectEmptyRuntimeException
      * @code processThrows(() -> selectObject(), (o) -> process(o))
      */
-    public static <T> T processThrows(Supplier<T> original, Function<T, T> oNotNull) {
+    public static <K, V> Map<K, V> processThrows(Supplier<Map<K, V>> original, Function<Map<K, V>, Map<K, V>> oNotNull) {
         return processThrows(original, oNotNull, ObjectEmptyRuntimeException::new);
     }
 
@@ -97,7 +98,7 @@ public class CObjectUtil {
      * @throws ObjectEmptyRuntimeException
      * @code processThrows(() -> selectObject(), (o) -> process(o), "object is null")
      */
-    public static <T> T processThrows(Supplier<T> original, Function<T, T> oNotNull, final String exceptionMessage) {
+    public static <K, V> Map<K, V> processThrows(Supplier<Map<K, V>> original, Function<Map<K, V>, Map<K, V>> oNotNull, final String exceptionMessage) {
         return processThrows(original, oNotNull, () -> new ObjectEmptyRuntimeException(exceptionMessage));
     }
 
@@ -109,10 +110,10 @@ public class CObjectUtil {
      * @throws RuntimeException
      * @code processThrows(() -> selectObject(), (o) -> process(o), RuntimeException::new)
      */
-    public static <T, EX extends RuntimeException> T processThrows(Supplier<T> original, Function<T, T> oNotNull, Supplier<EX> e) {
-        T t = original.get();
-        if (t != null) return oNotNull.apply(t);
-        throw e.get();
+    public static <K, V, EX extends RuntimeException> Map<K, V> processThrows(Supplier<Map<K, V>> original, Function<Map<K, V>, Map<K, V>> oNotNull, Supplier<EX> e) {
+        Map<K, V> t = original.get();
+        if (t == null || t.isEmpty()) throw e.get();
+        return oNotNull.apply(t);
     }
 
     /**
@@ -122,10 +123,10 @@ public class CObjectUtil {
      * @param oNull    对象为空执行的方法
      * @code consume(() -> selectObject(), (o) -> update(o), () -> System.out.println("object is null"))
      */
-    public static <T> void consume(Supplier<T> original, Consumer<T> oNotNull, VoidMethod oNull) {
-        T t = original.get();
-        if (t != null) oNotNull.accept(t);
-        else oNull.method();
+    public static <K, V> void consume(Supplier<Map<K, V>> original, Consumer<Map<K, V>> oNotNull, VoidMethod oNull) {
+        Map<K, V> t = original.get();
+        if (t == null || t.isEmpty()) oNull.method();
+        else oNotNull.accept(t);
     }
 
     /**
@@ -135,7 +136,7 @@ public class CObjectUtil {
      * @throws ObjectEmptyRuntimeException
      * @code consumeThrows(() -> selectObject(), (o) -> update(o))
      */
-    public static <T> void consumeThrows(Supplier<T> original, Consumer<T> oNotNull) {
+    public static <K, V> void consumeThrows(Supplier<Map<K, V>> original, Consumer<Map<K, V>> oNotNull) {
         consumeThrows(original, oNotNull, ObjectEmptyRuntimeException::new);
     }
 
@@ -147,7 +148,7 @@ public class CObjectUtil {
      * @throws ObjectEmptyRuntimeException
      * @code consumeThrows(() -> selectObject(), (o) -> update(o), "object is null")
      */
-    public static <T> void consumeThrows(Supplier<T> original, Consumer<T> oNotNull, final String exceptionMessage) {
+    public static <K, V> void consumeThrows(Supplier<Map<K, V>> original, Consumer<Map<K, V>> oNotNull, final String exceptionMessage) {
         consumeThrows(original, oNotNull, () -> new ObjectEmptyRuntimeException(exceptionMessage));
     }
 
@@ -159,10 +160,10 @@ public class CObjectUtil {
      * @throws RuntimeException
      * @code consumeThrows(() -> selectObject(), (o) -> update(o), RuntimeException::new)
      */
-    public static <T, EX extends RuntimeException> void consumeThrows(Supplier<T> original, Consumer<T> oNotNull, Supplier<EX> e) {
-        T t = original.get();
-        if (t != null) oNotNull.accept(t);
-        else throw e.get();
+    public static <K, V, EX extends RuntimeException> void consumeThrows(Supplier<Map<K, V>> original, Consumer<Map<K, V>> oNotNull, Supplier<EX> e) {
+        Map<K, V> t = original.get();
+        if (t == null || t.isEmpty()) throw e.get();
+        else oNotNull.accept(t);
     }
 
     /**
@@ -173,10 +174,10 @@ public class CObjectUtil {
      * @return 返回转换后的对象
      * @code convert(() -> selectObject(), (a) -> a2b(a), () -> B::new)
      */
-    public static <T, R> R convert(Supplier<T> original, Function<T, R> oNotNull, Supplier<R> oNull) {
-        T t = original.get();
-        if (t != null) return oNotNull.apply(t);
-        return oNull.get();
+    public static <K, V, K1, V1> Map<K1, V1> convert(Supplier<Map<K, V>> original, Function<Map<K, V>, Map<K1, V1>> oNotNull, Supplier<Map<K1, V1>> oNull) {
+        Map<K, V> t = original.get();
+        if (t == null || t.isEmpty()) return oNull.get();
+        return oNotNull.apply(t);
     }
 
     /**
@@ -187,7 +188,7 @@ public class CObjectUtil {
      * @throws ObjectEmptyRuntimeException
      * @code convertThrows(() -> selectObject(), (a) -> a2b(a))
      */
-    public static <T, R> R convertThrows(Supplier<T> original, Function<T, R> oNotNull) {
+    public static <K, V, K1, V1> Map<K1, V1> convertThrows(Supplier<Map<K, V>> original, Function<Map<K, V>, Map<K1, V1>> oNotNull) {
         return convertThrows(original, oNotNull, ObjectEmptyRuntimeException::new);
     }
 
@@ -199,7 +200,7 @@ public class CObjectUtil {
      * @throws ObjectEmptyRuntimeException
      * @code convertThrows(() -> selectObject(), (a) -> a2b(a), "object is null")
      */
-    public static <T, R> R convertThrows(Supplier<T> original, Function<T, R> oNotNull, final String exceptionMessage) {
+    public static <K, V, K1, V1> Map<K1, V1> convertThrows(Supplier<Map<K, V>> original, Function<Map<K, V>, Map<K1, V1>> oNotNull, final String exceptionMessage) {
         return convertThrows(original, oNotNull, () -> new ObjectEmptyRuntimeException(exceptionMessage));
     }
 
@@ -212,10 +213,10 @@ public class CObjectUtil {
      * @throws RuntimeException
      * @code convertThrows(() -> selectObject(), (a) -> a2b(a), RuntimeException::new)
      */
-    public static <T, R, EX extends RuntimeException> R convertThrows(Supplier<T> original, Function<T, R> oNotNull, Supplier<EX> e) {
-        T t = original.get();
-        if (t != null) return oNotNull.apply(t);
-        throw e.get();
+    public static <K, V, K1, V1, EX extends RuntimeException> Map<K1, V1> convertThrows(Supplier<Map<K, V>> original, Function<Map<K, V>, Map<K1, V1>> oNotNull, Supplier<EX> e) {
+        Map<K, V> t = original.get();
+        if (t == null || t.isEmpty()) throw e.get();
+        return oNotNull.apply(t);
     }
 
 }

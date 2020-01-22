@@ -1,12 +1,12 @@
-package org.campanula.utils.method;
+package io.github.campanula.utils.method;
 
-import org.campanula.utils.exception.WhereNotPassRuntimeException;
-import org.campanula.utils.function.VoidMethod;
+import io.github.campanula.utils.exception.WhereNotPassRuntimeException;
+import io.github.campanula.utils.function.VoidMethod;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-public class CWhereUtil {
+public final class CWhereUtil {
 
     /**
      * 传入一组条件 如果条件全部通过 则执行成功的操作 有一个没有通过则执行失败的操作

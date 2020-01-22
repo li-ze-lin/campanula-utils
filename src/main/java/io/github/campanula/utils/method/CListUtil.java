@@ -1,7 +1,7 @@
-package org.campanula.utils.method;
+package io.github.campanula.utils.method;
 
-import org.campanula.utils.exception.ObjectEmptyRuntimeException;
-import org.campanula.utils.function.VoidMethod;
+import io.github.campanula.utils.exception.ObjectEmptyRuntimeException;
+import io.github.campanula.utils.function.VoidMethod;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -12,7 +12,7 @@ import java.util.function.Supplier;
  * @Author: Campanula
  * @Date 2019-12-14
  */
-public class CListUtil {
+public final class CListUtil {
 
     /**
      * 获取方法返回的对象 如果为空 则返回定义的默认值
