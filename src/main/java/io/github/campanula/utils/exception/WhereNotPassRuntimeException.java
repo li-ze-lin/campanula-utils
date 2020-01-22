@@ -1,4 +1,4 @@
-package org.campanula.utils.exception;
+package io.github.campanula.utils.exception;
 
 public class WhereNotPassRuntimeException extends RuntimeException {
 

@@ -1,7 +1,7 @@
-package org.campanula.utils.method;
+package io.github.campanula.utils.method;
 
-import org.campanula.utils.exception.ObjectEmptyRuntimeException;
-import org.campanula.utils.function.VoidMethod;
+import io.github.campanula.utils.exception.ObjectEmptyRuntimeException;
+import io.github.campanula.utils.function.VoidMethod;
 
 import java.util.Map;
 import java.util.function.Consumer;

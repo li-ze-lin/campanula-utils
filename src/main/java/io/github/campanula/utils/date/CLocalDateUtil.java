@@ -1,4 +1,4 @@
-package org.campanula.utils.date;
+package io.github.campanula.utils.date;
 
 import java.time.*;
 import java.util.Date;

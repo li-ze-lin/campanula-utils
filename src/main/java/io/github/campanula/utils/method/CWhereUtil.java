@@ -1,7 +1,7 @@
-package org.campanula.utils.method;
+package io.github.campanula.utils.method;
 
-import org.campanula.utils.exception.WhereNotPassRuntimeException;
-import org.campanula.utils.function.VoidMethod;
+import io.github.campanula.utils.exception.WhereNotPassRuntimeException;
+import io.github.campanula.utils.function.VoidMethod;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;

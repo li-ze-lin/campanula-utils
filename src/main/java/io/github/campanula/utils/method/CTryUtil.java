@@ -1,7 +1,7 @@
-package org.campanula.utils.method;
+package io.github.campanula.utils.method;
 
-import org.campanula.utils.function.VoidMethod;
-import org.campanula.utils.param.CExceptionHandle;
+import io.github.campanula.utils.function.VoidMethod;
+import io.github.campanula.utils.param.CExceptionHandle;
 
 import java.util.function.Supplier;
 
