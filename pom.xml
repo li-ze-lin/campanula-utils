@@ -9,7 +9,7 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>fastsql</name>
+    <name>campanula-util</name>
     <url>http://maven.apache.org</url>
 
     <properties>
