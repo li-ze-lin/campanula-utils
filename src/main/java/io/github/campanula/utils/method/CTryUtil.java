@@ -13,7 +13,6 @@ public final class CTryUtil {
     /**
      * @param tryMethod 要执行的正常方法
      * @param handle 异常后执行的方法
-     * @code handle(() -> System.out.println("try"), CExceptionHandle.Blank.aBlank().add(Exception.class, () -> System.out.println("catch")).getHandle());
      */
     public static void handle(VoidMethod tryMethod, CExceptionHandle handle) {
         handle(tryMethod, handle, null);
@@ -23,7 +22,6 @@ public final class CTryUtil {
      * @param tryMethod 要执行的正常方法
      * @param handle 异常后执行的方法
      * @param finallyMethod finally要执行的方法
-     * @code handle(() -> System.out.println("try"), CExceptionHandle.Blank.aBlank().add(Exception.class, () -> System.out.println("catch")).getHandle(), () -> System.out.println("finally"));
      */
     public static void handle(VoidMethod tryMethod, CExceptionHandle handle, VoidMethod finallyMethod) {
         try {
@@ -42,7 +40,8 @@ public final class CTryUtil {
     /**
      * @param tryMethod 要执行的正常方法
      * @param handle 异常后执行的方法
-     * @code handle(() -> "try", CExceptionHandle.Result.aResult().add(Exception.class, () -> "catch").getHandle());
+     * @param <T> 逾期获取的类型
+     * @return 活预期的数据
      */
     public static <T> T handle(Supplier<T> tryMethod, CExceptionHandle handle) {
         return handle(tryMethod, handle, null);
@@ -52,7 +51,8 @@ public final class CTryUtil {
      * @param tryMethod 要执行的正常方法
      * @param handle 异常后执行的方法
      * @param finallyMethod finally要执行的方法
-     * @code handle(() -> "try", CExceptionHandle.Result.aResult().add(Exception.class, () -> "catch").getHandle(), () -> System.out.println("finally"));
+     * @param <T> 逾期获取的类型
+     * @return 活预期的数据
      */
     public static <T> T handle(Supplier<T> tryMethod, CExceptionHandle handle, VoidMethod finallyMethod) {
         try {

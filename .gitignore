@@ -39,4 +39,5 @@ bin/
 .project
 .settings/
 .DS_Store
+*.class
 
