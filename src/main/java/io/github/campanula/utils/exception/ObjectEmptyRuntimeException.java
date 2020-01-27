@@ -1,8 +1,8 @@
 package io.github.campanula.utils.exception;
 
 /**
- * @Author: Campanula
- * @Date 2019-12-14
+ * Author Campanula
+ * Date 2019-12-14
  */
 public class ObjectEmptyRuntimeException extends RuntimeException {
 
