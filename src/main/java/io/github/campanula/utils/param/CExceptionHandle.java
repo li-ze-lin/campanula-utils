@@ -92,7 +92,7 @@ public final class CExceptionHandle<EX extends Exception, EF> {
     /**
      * 有返回值异常初始化以及拼装
      */
-    public final static class Result<EX extends Exception, EF> {
+    public final static class Result {
 
         private CExceptionHandle handle;
         private Class<Exception> clazz;
@@ -114,7 +114,7 @@ public final class CExceptionHandle<EX extends Exception, EF> {
          * @param function 这种类型要执行的方法
          * @return 拼装类本身
          */
-        public Result add(Class<EX> eClass, Function<EX, EF> function) {
+        public <EX extends Exception, EF> Result add(Class<EX> eClass, Function<EX, EF> function) {
             if (this.clazz.equals(eClass)) {
                 this.handle.exceptionFunction = function;
                 return this;
@@ -132,7 +132,7 @@ public final class CExceptionHandle<EX extends Exception, EF> {
     /**
      * 无返回值异常初始化以及拼装
      */
-    public final static class Blank<EX extends Exception> {
+    public final static class Blank {
 
         private CExceptionHandle handle;
         private Class<Exception> clazz;
@@ -154,7 +154,7 @@ public final class CExceptionHandle<EX extends Exception, EF> {
          * @param consumer 这种类型要执行的方法
          * @return 拼装类本身
          */
-        public Blank add(Class<EX> eClass, Consumer<EX> consumer) {
+        public <EX extends Exception> Blank add(Class<EX> eClass, Consumer<EX> consumer) {
             if (this.clazz.equals(eClass)) {
                 this.handle.exceptionConsumer = consumer;
                 return this;
