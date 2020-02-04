@@ -1,10 +1,9 @@
 package io.github.campanula.utils.param;
 
-import io.github.campanula.utils.function.VoidMethod;
-
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * 用于异常处理
@@ -21,22 +20,22 @@ public final class CExceptionHandle<EX extends Exception, EF> {
     /**
      * 指定类型处理指定的逻辑(有返回值)
      */
-    private List<Supplier<EF>> suppliers;
+    private List<Function<EX, EF>> suppliers;
 
     /**
      * 指定类型处理指定的逻辑(无返回值)
      */
-    private List<VoidMethod> voidMethods;
+    private List<Consumer<EX>> voidMethods;
 
     /**
      * 异常为Exception的处理(有返回值)
      */
-    private Supplier<EF> exceptionSupplier;
+    private Function<EX, EF> exceptionFunction;
 
     /**
      * 异常为Exception的处理(无返回值)
      */
-    private VoidMethod exceptionVoidMethods;
+    private Consumer<EX> exceptionConsumer;
 
     /**
      * 标识 是否有返回值
@@ -60,12 +59,12 @@ public final class CExceptionHandle<EX extends Exception, EF> {
             for (int i = 0; i < size; i++) {
                 exClass = exceptions.get(i);
                 if (e.getClass().equals(exClass)) {
-                    return suppliers.get(i).get();
+                    return suppliers.get(i).apply(e);
                 }
             }
 
-            if (exceptionSupplier != null) {
-                return exceptionSupplier.get();
+            if (exceptionFunction != null) {
+                return exceptionFunction.apply(e);
             }
             else {
                 throw new RuntimeException(e);
@@ -75,13 +74,13 @@ public final class CExceptionHandle<EX extends Exception, EF> {
             for (int i = 0; i < size; i++) {
                 exClass = exceptions.get(i);
                 if (e.getClass().equals(exClass)) {
-                    voidMethods.get(i).method();
+                    voidMethods.get(i).accept(e);
                     return null;
                 }
             }
 
-            if (exceptionVoidMethods != null) {
-                exceptionVoidMethods.method();
+            if (exceptionConsumer != null) {
+                exceptionConsumer.accept(e);
                 return null;
             }
             else {
@@ -93,7 +92,7 @@ public final class CExceptionHandle<EX extends Exception, EF> {
     /**
      * 有返回值异常初始化以及拼装
      */
-    public final static class Result<EX extends Exception, EF> {
+    public final static class Result {
 
         private CExceptionHandle handle;
         private Class<Exception> clazz;
@@ -112,15 +111,15 @@ public final class CExceptionHandle<EX extends Exception, EF> {
         /**
          * 拼装异常以及执行的方法
          * @param eClass 异常类型
-         * @param supplier 这种类型要执行的方法
+         * @param function 这种类型要执行的方法
          * @return 拼装类本身
          */
-        public Result add(Class<EX> eClass, Supplier<EF> supplier) {
+        public <EX extends Exception, EF> Result add(Class<EX> eClass, Function<EX, EF> function) {
             if (this.clazz.equals(eClass)) {
-                this.handle.exceptionSupplier = supplier;
+                this.handle.exceptionFunction = function;
                 return this;
             }
-            this.handle.suppliers.add(supplier);
+            this.handle.suppliers.add(function);
             this.handle.exceptions.add(eClass);
             return this;
         }
@@ -133,7 +132,7 @@ public final class CExceptionHandle<EX extends Exception, EF> {
     /**
      * 无返回值异常初始化以及拼装
      */
-    public final static class Blank<EX extends Exception> {
+    public final static class Blank {
 
         private CExceptionHandle handle;
         private Class<Exception> clazz;
@@ -152,15 +151,15 @@ public final class CExceptionHandle<EX extends Exception, EF> {
         /**
          * 拼装异常以及执行的方法
          * @param eClass 异常类型
-         * @param voidMethod 这种类型要执行的方法
+         * @param consumer 这种类型要执行的方法
          * @return 拼装类本身
          */
-        public Blank add(Class<EX> eClass, VoidMethod voidMethod) {
+        public <EX extends Exception> Blank add(Class<EX> eClass, Consumer<EX> consumer) {
             if (this.clazz.equals(eClass)) {
-                this.handle.exceptionVoidMethods = voidMethod;
+                this.handle.exceptionConsumer = consumer;
                 return this;
             }
-            this.handle.voidMethods.add(voidMethod);
+            this.handle.voidMethods.add(consumer);
             this.handle.exceptions.add(eClass);
             return this;
         }
