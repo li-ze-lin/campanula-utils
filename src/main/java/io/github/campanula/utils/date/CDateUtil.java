@@ -4,8 +4,8 @@ import java.time.*;
 import java.util.Date;
 
 /**
- * @Author: Campanula
- * @Date 2019-12-14
+ * Author Campanula
+ * Date 2019-12-14
  */
 public final class CDateUtil {
 

@@ -6,27 +6,8 @@
 
     <groupId>io.github.campanula-medium</groupId>
     <artifactId>utils</artifactId>
-    <version>1.0.0-TEST-SNAPSHOOT</version>
 
-    <dependencies>
-
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13</version>
-            <scope>test</scope>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>28.1-jre</version>
-        </dependency>
-
-    </dependencies>
-
+    <version>1.0.1-TEST-SNAPSHOOT</version>
     <build>
         <plugins>
             <plugin>
@@ -39,5 +20,25 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.1-jre</version>
+        </dependency>
+
+    </dependencies>
+
+
 
 </project>
