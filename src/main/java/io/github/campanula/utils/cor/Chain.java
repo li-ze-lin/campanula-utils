@@ -1,5 +1,10 @@
 package io.github.campanula.utils.cor;
 
+/**
+ * 链的抽象父类
+ * @param <IN> 入参泛型
+ * @param <OUT> 出参泛型
+ */
 public interface Chain<IN, OUT> {
 
     /**
