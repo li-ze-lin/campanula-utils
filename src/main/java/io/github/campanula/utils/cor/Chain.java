@@ -16,7 +16,7 @@ public interface Chain<IN, OUT> {
      * @param next 下一个链
      * @return 返回传入链的实例
      */
-    Chain<?, ?> setNext(Chain<OUT, ?> next);
+    <E> Chain<OUT, E> setNext(Chain<OUT, E> next);
 
     /**
      * 从当前链一直处理到最后一个链
@@ -25,9 +25,9 @@ public interface Chain<IN, OUT> {
      * @code no Chain.setNext(next).setNext(next).execute();
      */
     default void execute() {
-        Chain<OUT, ?> handler;
+        Chain<?, ?> handler = handler();
         do {
-            handler = handler();
+            handler = handler.handler();
         } while (handler != null);
     }
 }

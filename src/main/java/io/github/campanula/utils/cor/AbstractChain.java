@@ -1,5 +1,10 @@
 package io.github.campanula.utils.cor;
 
+/**
+ * 链的抽象父类
+ * @param <IN> 入参泛型
+ * @param <OUT> 出参泛型
+ */
 public abstract class AbstractChain<IN, OUT> implements Chain<IN, OUT> {
 
     /**
@@ -42,13 +47,13 @@ public abstract class AbstractChain<IN, OUT> implements Chain<IN, OUT> {
     protected abstract OUT handler(IN inParam);
 
     private void setNextInParam(OUT param) {
-        if (this.next != null && !this.useExternalInParam) {
+        if (this.next != null && !this.next.useExternalInParam) {
             this.next.inParam = param;
         }
     }
 
     @Override
-    public Chain<?, ?> setNext(Chain<OUT, ?> next) {
+    public <E> Chain<OUT, E> setNext(Chain<OUT, E> next) {
         this.next = (AbstractChain<OUT, ?>) next;
         return next;
     }
