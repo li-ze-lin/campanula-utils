@@ -42,7 +42,7 @@ public abstract class AbstractChain<IN, OUT> implements Chain<IN, OUT> {
     }
 
     @Override
-    final public AbstractChain<OUT, ?> handler() {
+    public AbstractChain<OUT, ?> handler() {
         this.out = handler(this.inParam);
         this.setNextInParam(this.out);
         return this.next;
