@@ -9,6 +9,10 @@ public class ChainTest {
     @Test
     public void testChain() {
         AChain a = new AChain("1");
+        a.execute();
+        System.out.println();
+
+        a = new AChain("1");
         Chain<Integer, BigDecimal> b = a.setNext(new BChain());
         Chain<BigDecimal, String> c = b.setNext(new CChain());
         c.setNext(new DChain());

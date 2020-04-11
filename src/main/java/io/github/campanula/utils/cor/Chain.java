@@ -25,7 +25,7 @@ public interface Chain<IN, OUT> {
      * @code no Chain.setNext(next).setNext(next).execute();
      */
     default void execute() {
-        Chain<?, ?> handler = handler();
+        Chain<?, ?> handler = this;
         do {
             handler = handler.handler();
         } while (handler != null);
