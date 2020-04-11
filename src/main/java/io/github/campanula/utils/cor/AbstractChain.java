@@ -22,6 +22,10 @@ public abstract class AbstractChain<IN, OUT> implements Chain<IN, OUT> {
      * 下一个链
      */
     private AbstractChain<OUT, ?> next;
+    /**
+     * 返回的数据
+     */
+    private OUT out;
 
     public AbstractChain() {
         this.useExternalInParam = false;
@@ -38,9 +42,9 @@ public abstract class AbstractChain<IN, OUT> implements Chain<IN, OUT> {
     }
 
     @Override
-    final public AbstractChain<OUT, ?> handler() {
-        OUT out = handler(this.inParam);
-        this.setNextInParam(out);
+    public AbstractChain<OUT, ?> handler() {
+        this.out = handler(this.inParam);
+        this.setNextInParam(this.out);
         return this.next;
     }
 
@@ -58,4 +62,13 @@ public abstract class AbstractChain<IN, OUT> implements Chain<IN, OUT> {
         return next;
     }
 
+    @Override
+    public boolean hasNext() {
+        return this.next != null;
+    }
+
+    @Override
+    public OUT getOutData() {
+        return this.out;
+    }
 }
