@@ -27,8 +27,8 @@ public class ChainTest {
 
         a = new AChain("3");
         a.setNext(new BChain(4, true)).setNext(new CChain()).setNext(new DChain());
-        a.execute();
-        System.out.println();
+        Object execute = a.execute();
+        System.out.println(execute);
     }
 
     public class DChain extends AbstractChain<String, BigDecimal> {
