@@ -7,16 +7,10 @@ import io.github.campanula.utils.proxy.param.CProxyBeforeParam;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-public class CInvocationHandler<T> implements InvocationHandler {
-
-    private T t;
-    private CAbstractBeforeProxyHandle<T> before;
-    private CAbstractAfterProxyHandle<T> after;
+public class CInvocationHandler<T> extends CAbstractProxyHandler<T> implements InvocationHandler {
 
     public CInvocationHandler(T t, CAbstractBeforeProxyHandle<T> before, CAbstractAfterProxyHandle<T> after) {
-        this.t = t;
-        this.before = before;
-        this.after = after;
+        super(t, before, after);
     }
 
     @Override
@@ -26,15 +20,20 @@ public class CInvocationHandler<T> implements InvocationHandler {
         try {
 
             if (this.before != null) {
-                this.before.setParam(new CProxyBeforeParam<T>((T) proxy, method, args));
-                this.before.execute();
+                this.before.setParam(new CProxyBeforeParam<T>(t, method, args));
+                CProxyBeforeParam<T> execute = (CProxyBeforeParam<T>)this.before.execute();
+                t = execute.getProxy();
+                method = execute.getMethod();
+                args = execute.getArgs();
             }
 
             invoke = method.invoke(t, args);
 
             if (this.after != null) {
-                this.after.setParam(new CProxyAfterParam<T>((T) proxy, method, args, invoke));
-                this.after.execute();
+                this.after.setParam(new CProxyAfterParam<T>(t, method, args, invoke));
+                CProxyAfterParam<T> execute = (CProxyAfterParam<T>)this.after.execute();
+                t = execute.getProxy();
+                invoke = execute.getResult();
             }
 
         }

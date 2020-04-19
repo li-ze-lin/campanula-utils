@@ -28,4 +28,16 @@ public class CProxyBeforeParam<T> {
     public Object[] getArgs() {
         return args;
     }
+
+    public void setProxy(T proxy) {
+        this.proxy = proxy;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
+    }
+
+    public void setArgs(Object[] args) {
+        this.args = args;
+    }
 }

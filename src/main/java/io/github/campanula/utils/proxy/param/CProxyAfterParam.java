@@ -34,4 +34,20 @@ public class CProxyAfterParam<T> {
     public Object getResult() {
         return result;
     }
+
+    public void setProxy(T proxy) {
+        this.proxy = proxy;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
+    }
+
+    public void setArgs(Object[] args) {
+        this.args = args;
+    }
+
+    public void setResult(Object result) {
+        this.result = result;
+    }
 }
