@@ -20,10 +20,9 @@ public interface Chain<IN, OUT> {
 
     /**
      * 获取处理完本链的逻辑的返回值
-     * @param <RESULT> 获取处理完本链的逻辑的返回值
      * @return 获取处理完本链的逻辑的返回值
      */
-    <RESULT> RESULT getOutData();
+    OUT getOutData();
 
     /**
      * 看是否还有下一个链
@@ -38,7 +37,7 @@ public interface Chain<IN, OUT> {
      * @code no Chain.setNext(next).setNext(next).execute();
      * @return 获取最后一个链的返回值
      */
-    default <RESULT> RESULT execute() {
+    default Object execute() {
         Chain<?, ?> handler = this;
         while (handler.hasNext()) {
             handler = handler.handler();
