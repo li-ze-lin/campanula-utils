@@ -1,6 +1,8 @@
-package io.github.campanula.utils.proxy;
+package io.github.campanula.utils.proxy.protogenesis;
 
 import io.github.campanula.utils.exception.CampanulaRuntimeException;
+import io.github.campanula.utils.proxy.CAbstractAfterProxyHandle;
+import io.github.campanula.utils.proxy.CAbstractBeforeProxyHandle;
 
 import java.lang.reflect.Proxy;
 import java.util.List;

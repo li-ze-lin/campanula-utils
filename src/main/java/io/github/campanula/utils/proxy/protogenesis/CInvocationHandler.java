@@ -1,6 +1,9 @@
-package io.github.campanula.utils.proxy;
+package io.github.campanula.utils.proxy.protogenesis;
 
 import io.github.campanula.utils.exception.CampanulaRuntimeException;
+import io.github.campanula.utils.proxy.CAbstractAfterProxyHandle;
+import io.github.campanula.utils.proxy.CAbstractBeforeProxyHandle;
+import io.github.campanula.utils.proxy.CAbstractProxyHandler;
 import io.github.campanula.utils.proxy.param.CProxyAfterParam;
 import io.github.campanula.utils.proxy.param.CProxyBeforeParam;
 

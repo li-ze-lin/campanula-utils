@@ -3,6 +3,7 @@ package io.github.campanula.utils.proxy;
 import io.github.campanula.utils.exception.CampanulaRuntimeException;
 import io.github.campanula.utils.proxy.param.CProxyAfterParam;
 import io.github.campanula.utils.proxy.param.CProxyBeforeParam;
+import io.github.campanula.utils.proxy.protogenesis.CEntityProxyFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -90,7 +91,7 @@ public class TestProxy {
         }
     }
 
-    static class Demo implements DemoInterface {
+    public static class Demo implements DemoInterface {
 
         public Integer plusOneProxy(Integer integer) {
             if (integer == null) return 1;
@@ -103,7 +104,7 @@ public class TestProxy {
         }
     }
 
-    interface DemoInterface {
+    public interface DemoInterface {
         @DemoProxy
         Integer plusOneProxy(Integer integer);
         Integer plusOne(Integer integer);

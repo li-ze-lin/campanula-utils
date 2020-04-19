@@ -16,7 +16,7 @@ public abstract class CAbstractAfterProxyHandle<T> extends AbstractChain<CProxyA
     protected abstract void operate(CProxyAfterParam<T> afterParam);
 
 
-    void setParam(CProxyAfterParam<T> inParam) {
+    public void setParam(CProxyAfterParam<T> inParam) {
         super.setInParam(inParam);
     }
 
