@@ -10,22 +10,24 @@ public abstract class AbstractChain<IN, OUT> implements Chain<IN, OUT> {
     /**
      * 传入要要处理的数据源
      */
-    protected IN inParam;
+    private IN inParam;
     /**
      * 是否使用构造方法传入的参数
      * 不使用上一个处理返回的数据
      * true 用外部数据
      * false 用上一个链处理后的返回值
      */
-    protected boolean useExternalInParam;
+    private boolean useExternalInParam = false;
     /**
      * 下一个链
      */
     private AbstractChain<OUT, ?> next;
+    /**
+     * 返回的数据
+     */
+    private OUT out;
 
-    public AbstractChain() {
-        this.useExternalInParam = false;
-    }
+    public AbstractChain() {}
 
     public AbstractChain(IN inParam) {
         this.inParam = inParam;
@@ -38,9 +40,9 @@ public abstract class AbstractChain<IN, OUT> implements Chain<IN, OUT> {
     }
 
     @Override
-    final public AbstractChain<OUT, ?> handler() {
-        OUT out = handler(this.inParam);
-        this.setNextInParam(out);
+    public AbstractChain<OUT, ?> handler() {
+        this.out = handler(this.inParam);
+        this.setNextInParam(this.out);
         return this.next;
     }
 
@@ -58,4 +60,17 @@ public abstract class AbstractChain<IN, OUT> implements Chain<IN, OUT> {
         return next;
     }
 
+    @Override
+    public boolean hasNext() {
+        return this.next != null;
+    }
+
+    @Override
+    public OUT getOutData() {
+        return this.out;
+    }
+
+    protected void setInParam(IN inParam) {
+        this.inParam = inParam;
+    }
 }
