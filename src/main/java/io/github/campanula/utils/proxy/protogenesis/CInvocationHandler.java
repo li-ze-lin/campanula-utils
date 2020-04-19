@@ -10,6 +10,10 @@ import io.github.campanula.utils.proxy.param.CProxyBeforeParam;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+/**
+ * 实现jdk原生的代理方法
+ * @param <T> 要代理的对象
+ */
 public class CInvocationHandler<T> extends CAbstractProxyHandler<T> implements InvocationHandler {
 
     public CInvocationHandler(T t, CAbstractBeforeProxyHandle<T> before, CAbstractAfterProxyHandle<T> after) {

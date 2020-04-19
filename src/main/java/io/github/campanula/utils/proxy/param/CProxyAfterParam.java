@@ -2,6 +2,10 @@ package io.github.campanula.utils.proxy.param;
 
 import java.lang.reflect.Method;
 
+/**
+ * 要在方法执行完后的参数
+ * @param <T> 代理的对象
+ */
 public class CProxyAfterParam<T> {
 
     private T proxy;
