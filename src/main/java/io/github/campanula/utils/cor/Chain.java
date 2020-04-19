@@ -20,7 +20,6 @@ public interface Chain<IN, OUT> {
 
     /**
      * 获取处理完本链的逻辑的返回值
-     * @param <OUT> 获取处理完本链的逻辑的返回值
      * @return 获取处理完本链的逻辑的返回值
      */
     OUT getOutData();
