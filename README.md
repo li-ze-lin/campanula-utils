@@ -45,6 +45,7 @@ public abstract AbstractChain<IN, OUT> implements Chain<IN, OUT> {
 - [处理List的方法 io.github.campanula.utils.method.CListUtil](https://github.com/li-ze-lin/campanula-utils/blob/master/src/main/java/io/github/campanula/utils/method/CListUtil.java)
 - [处理对象的方法 io.github.campanula.utils.method.CObjectUtil](https://github.com/li-ze-lin/campanula-utils/blob/master/src/main/java/io/github/campanula/utils/method/CObjectUtil.java)
 - [处理条件处理的方法 io.github.campanula.utils.method.CWhereUtil](https://github.com/li-ze-lin/campanula-utils/blob/master/src/main/java/io/github/campanula/utils/method/CWhereUtil.java)
+
 *[例子可以参考UT](https://github.com/li-ze-lin/campanula-utils/tree/test/src/test/java/io/github/campanula/utils/method)*
 
 ## 基于JDK的代理模式进行封装
